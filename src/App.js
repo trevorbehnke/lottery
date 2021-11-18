@@ -2,6 +2,7 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import lottery from "./lottery";
 import web3 from "./web3";
+import lotteryImg from "./assets/lottery.jpeg";
 
 const App = () => {
   const [manager, setManager] = useState("");
@@ -22,7 +23,7 @@ const App = () => {
       setContractBalance(balance);
     };
     init();
-  }, []);
+  }, [players, contractBalance]);
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -34,6 +35,7 @@ const App = () => {
       value: web3.utils.toWei(value, "ether"),
     });
     setMessage("You have been entered!");
+    setValue("");
   };
 
   const onPickWinner = async () => {
@@ -49,35 +51,54 @@ const App = () => {
     setMessage("A winner has been picked!");
   };
   return (
-    <div>
-      <h2>Lottery Contract</h2>
-      <p>This contract is managed by {manager}</p>
-      <p>
-        There are currently {players.length} entered, competing to win{" "}
-        {web3.utils.fromWei(contractBalance, "ether")} ether!
-      </p>
-      <hr />
-      <form onSubmit={submitForm}>
+    <div className="bg-gradient-to-r from-green-300 to-purple-400 h-screen scc">
+      <div className="bg-white scc p-8 rounded-lg shadow-2xl">
+        <img
+          src={lotteryImg}
+          alt="lottery"
+          className=" w-96 rounded-full pb-4"
+        />
+        {/* <h2>Lottery Contract</h2> */}
+        <p>This contract is managed by:</p>
+        <span className="font-bold">
+          {" "}
+          <p>{manager}</p>
+        </span>
+        <br />
+        <p>
+          There are currently{" "}
+          <span className="font-bold">{players.length} </span> entered,
+          competing to win{" "}
+          <span className="font-bold">
+            {web3.utils.fromWei(contractBalance, "ether")}
+          </span>{" "}
+          ether!
+        </p>
+        <br />
         <h4>Want to try your luck?</h4>
-        <div>
-          <label>Amount of ether to enter</label>
-          <input
-            style={{ marginLeft: "1vw" }}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
-          <button style={{ display: "block", marginTop: "1vh" }}>Enter</button>
+        <form onSubmit={submitForm} className="scc">
+          <div className="scc">
+            <label>Enter more than .01 (Ropsten) ether.</label>
+            <input
+              style={{ marginLeft: "1vw" }}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+            <button style={{ display: "block", marginTop: "1vh" }}>
+              Enter
+            </button>
+          </div>
+        </form>
+
+        <br />
+
+        <div className="scc">
+          <h4>Ready to pick a winner?</h4>
+          <button onClick={onPickWinner}>Pick a winner!</button>
         </div>
-      </form>
-
-      <hr />
-
-      <div>
-        <h4>Ready to pick a winner?</h4>
-        <button onClick={onPickWinner}>Pick a winner!</button>
+        <hr />
+        <h2 className="text-green-500">{message}</h2>
       </div>
-      <hr />
-      <h1>{message}</h1>
     </div>
   );
 };
